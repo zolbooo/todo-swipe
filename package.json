@@ -19,8 +19,7 @@
     "semi": true,
     "printWidth": 80,
     "singleQuote": true,
-    "trailingComma": "all",
-    "jsxBracketSameLine": true
+    "trailingComma": "all"
   },
   "devDependencies": {
     "@babel/core": "^7.6.2",

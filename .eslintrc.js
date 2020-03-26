@@ -1,6 +1,6 @@
-module.exports = {
-  root: true,
-  extends: '@react-native-community',
-  parser: '@typescript-eslint/parser',
-  plugins: ['@typescript-eslint'],
-};
+const config = require('@nicepack/eslint-ts');
+
+config.root = true;
+config.extends.push('@react-native-community');
+
+module.exports = config;

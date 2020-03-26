@@ -15,6 +15,12 @@
     "react-native": "0.61.5",
     "styled-components": "^5.0.1"
   },
+  "prettier": {
+    "semi": true,
+    "singleQuote": true,
+    "trailingComma": "all",
+    "jsxBracketSameLine": true
+  },
   "devDependencies": {
     "@babel/core": "^7.6.2",
     "@babel/runtime": "^7.6.2",

@@ -1,6 +1,9 @@
-const config = require('@nicepack/eslint-ts');
+const config = require('@nicepack/eslint-ts/react');
 
-config.root = true;
-config.extends.push('@react-native-community');
+config.settings = {
+  'import/resolver': {
+    'babel-module': {},
+  },
+};
 
 module.exports = config;

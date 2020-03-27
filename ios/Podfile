@@ -38,6 +38,8 @@ target 'TODOSwipe' do
 
   pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
 
+  pod 'react-native-splash-screen', :path => '../node_modules/react-native-splash-screen'
+
   target 'TODOSwipeTests' do
     inherit! :search_paths
     # Pods for testing

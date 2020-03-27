@@ -1,6 +1,7 @@
 import React from 'react';
+import styled from 'styled-components/native';
 import PushNotification from 'react-native-push-notification';
-import { SafeAreaView, StatusBar } from 'react-native';
+import { StatusBar } from 'react-native';
 
 import Todos from './screens/Todos';
 
@@ -14,13 +15,19 @@ PushNotification.configure({
   requestPermissions: true,
 });
 
+const AppContainer = styled.SafeAreaView`
+  width: 100%;
+  height: 100%;
+  background-color: #f3f5fa;
+`;
+
 const App = () => {
   return (
     <>
       <StatusBar backgroundColor="#f3f5fa" barStyle="dark-content" />
-      <SafeAreaView style={{ backgroundColor: '#f3f5fa' }}>
+      <AppContainer>
         <Todos />
-      </SafeAreaView>
+      </AppContainer>
     </>
   );
 };

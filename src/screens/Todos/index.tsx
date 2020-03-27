@@ -4,6 +4,7 @@ import styled from 'styled-components/native';
 import TodoCard from '@/components/TodoCard';
 
 import { useTodoCards } from './useTodoCards';
+import { useNotifications } from './useNotifications';
 
 const Todos = () => {
   const {
@@ -22,6 +23,7 @@ const Todos = () => {
       description: 'Do another something',
     },
   ]);
+  useNotifications(todos);
 
   return (
     <>

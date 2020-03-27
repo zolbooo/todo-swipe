@@ -8,6 +8,7 @@ import { Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 import { useTodoItems } from '@/hooks/useTodoItems';
 import { useDimensions } from '@/hooks/useDimensions';
 import { pickFromPalette } from '@/utils/palette';
+import { generateRandomID } from '@/utils/random';
 
 import ColorSelector from './ColorSelector';
 
@@ -76,7 +77,7 @@ function AddTodo({ show, close }: { show: boolean; close: () => void }) {
 
   const addTodo = () => {
     add({
-      id: Math.floor(Math.random() * 0xffffff).toString(16),
+      id: generateRandomID(),
       title,
       color,
       description,

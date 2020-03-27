@@ -3,6 +3,7 @@ import { T, cond, gt, always, lt, __ } from 'ramda';
 import { Animated, PanResponder, PanResponderGestureState } from 'react-native';
 
 import { useDimensions } from '@/hooks/useDimensions';
+import { useCallbackRef } from '@/hooks/useCallbackRef';
 import { useTodoItems, TodoItem } from '@/hooks/useTodoItems';
 
 type TodoAction = 'DISMISS' | 'DONE' | 'IGNORE';
@@ -34,6 +35,26 @@ export function useTodoCards(initialState: TodoItem[]) {
   const position = useRef(new Animated.ValueXY()).current;
   useLayoutEffect(() => position.setValue({ x: 0, y: 0 }), [todos]);
 
+  const handleGestureReleaseRef = useCallbackRef(
+    (gestureState: PanResponderGestureState) => {
+      const action = getAction(gestureState.dx);
+      const shouldIgnore =
+        (action === 'DISMISS' && todos.length === 1) || action === 'IGNORE';
+
+      const animation = getAnimation(
+        shouldIgnore ? 'IGNORE' : action,
+        gestureState.dy,
+        screen.width,
+      );
+      Animated.spring(position, animation).start(() => {
+        if (shouldIgnore) return;
+        if (action === 'DONE') done();
+        if (action === 'DISMISS') dismiss();
+      });
+    },
+    [todos.length],
+  );
+
   const panResponder = useRef(
     PanResponder.create({
       onPanResponderMove: Animated.event([
@@ -41,14 +62,8 @@ export function useTodoCards(initialState: TodoItem[]) {
         { dx: position.x, dy: position.y },
       ]),
       onMoveShouldSetPanResponder: T,
-      onPanResponderRelease: (_, gestureState: PanResponderGestureState) => {
-        const action = getAction(gestureState.dx);
-        const animation = getAnimation(action, gestureState.dy, screen.width);
-        Animated.spring(position, animation).start(() => {
-          if (action === 'DONE') done();
-          if (action === 'DISMISS') dismiss();
-        });
-      },
+      onPanResponderRelease: (_, gestureState: PanResponderGestureState) =>
+        handleGestureReleaseRef.current(gestureState),
     }),
   ).current;
 

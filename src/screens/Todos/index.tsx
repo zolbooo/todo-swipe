@@ -1,45 +1,40 @@
 import React from 'react';
 import styled from 'styled-components/native';
 
-import FoodItem from '@/components/FoodItem';
+import TodoCard from '@/components/TodoCard';
 
 import { useTodoCards } from './useTodoCards';
 
-const foods = [
-  { id: '1', uri: require('@/assets/poutine.jpeg') },
-  { id: '2', uri: require('@/assets/korean.jpeg') },
-  { id: '3', uri: require('@/assets/IUD.jpeg') },
-  { id: '4', uri: require('@/assets/ramen.jpeg') },
-];
-
-const Foods = () => {
+const Todos = () => {
   const {
+    todos,
     screen,
-    currentIndex,
     panResponder,
     transformCard,
     nextCardScale,
     nextCardOpacity,
-  } = useTodoCards();
+  } = useTodoCards([
+    { id: '1', title: 'Todo', description: 'Do something' },
+    { id: '2', title: 'Todo #2', description: 'Do another something' },
+  ]);
 
   return (
     <>
-      {foods
-        .slice(currentIndex)
-        .map((food, i) =>
+      {todos
+        .map((todo, i) =>
           i === 0 ? (
-            <FoodItem
-              key={food.id}
-              food={food}
+            <TodoCard
+              key={todo.id}
+              todo={todo}
               width={screen.width}
               height={screen.height - 120}
               style={{ transform: transformCard }}
               {...panResponder.panHandlers}
             />
           ) : (
-            <FoodItem
-              key={food.id}
-              food={food}
+            <TodoCard
+              key={todo.id}
+              todo={todo}
               width={screen.width}
               height={screen.height - 120}
               style={{
@@ -63,12 +58,8 @@ const TodosContainer = styled.View`
   justify-content: center;
 `;
 
-function Todos() {
-  return (
-    <TodosContainer>
-      <Foods />
-    </TodosContainer>
-  );
-}
-
-export default Todos;
+export default () => (
+  <TodosContainer>
+    <Todos />
+  </TodosContainer>
+);

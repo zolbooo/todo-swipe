@@ -1,17 +1,13 @@
-import { useRef, useState, useLayoutEffect } from 'react';
-import {
-  Animated,
-  ScaledSize,
-  PanResponder,
-  PanResponderGestureState,
-} from 'react-native';
-import { T, inc, pipe, cond, gt, always, lt, prop, __ } from 'ramda';
+import { useRef, useLayoutEffect } from 'react';
+import { T, cond, gt, always, lt, __ } from 'ramda';
+import { Animated, PanResponder, PanResponderGestureState } from 'react-native';
 
 import { useDimensions } from '@/hooks/useDimensions';
+import { useTodoItems, TodoItem } from '@/hooks/useTodoItems';
 
 type TodoAction = 'DISMISS' | 'DONE' | 'IGNORE';
 
-const getAction: (dx: number) => TodoAction = cond([
+const getAction = cond<number, TodoAction>([
   [gt(__, 120), always('DONE')],
   [lt(__, -120), always('DISMISS')],
   [T, always('IGNORE')],
@@ -31,12 +27,12 @@ function getAnimation(action: TodoAction, dy: number, screenWidth: number) {
   }
 }
 
-export function useTodoCards() {
+export function useTodoCards(initialState: TodoItem[]) {
   const screen = useDimensions();
-  const [currentIndex, setCurrentIndex] = useState(0);
+  const { todos, dismiss, done } = useTodoItems(initialState);
 
   const position = useRef(new Animated.ValueXY()).current;
-  useLayoutEffect(() => position.setValue({ x: 0, y: 0 }), [currentIndex]);
+  useLayoutEffect(() => position.setValue({ x: 0, y: 0 }), [todos]);
 
   const panResponder = useRef(
     PanResponder.create({
@@ -49,9 +45,8 @@ export function useTodoCards() {
         const action = getAction(gestureState.dx);
         const animation = getAnimation(action, gestureState.dy, screen.width);
         Animated.spring(position, animation).start(() => {
-          if (action !== 'IGNORE') {
-            setCurrentIndex(inc);
-          }
+          if (action === 'DONE') done();
+          if (action === 'DISMISS') dismiss();
         });
       },
     }),
@@ -82,8 +77,8 @@ export function useTodoCards() {
   ).current;
 
   return {
+    todos,
     screen,
-    currentIndex,
     panResponder,
     transformCard,
     nextCardOpacity,

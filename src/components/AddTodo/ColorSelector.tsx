@@ -1,8 +1,15 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { prop } from 'ramda';
+import { pipe, prop, __ } from 'ramda';
 
 import palette from '@/assets/palette.json';
+
+export const pickFromPalette = pipe(
+  prop('color') as (arg: {
+    color: string;
+  }) => 'white' | 'black' | 'red' | 'blue' | 'green' | 'yellow',
+  prop(__, palette),
+);
 
 const ColorSelectorContainer = styled.View`
   width: 100%;
@@ -18,7 +25,7 @@ const ColorItem = styled.TouchableOpacity<{ color: string }>`
   border-width: 1px;
   border-color: grey;
   border-radius: 15px;
-  background-color: ${prop('color')};
+  background-color: ${pickFromPalette};
 `;
 
 function ColorSelector({
@@ -30,7 +37,7 @@ function ColorSelector({
 }) {
   return (
     <ColorSelectorContainer>
-      {Object.values(palette)
+      {Object.keys(palette)
         .filter((paletteColor: string) => paletteColor !== color)
         .map((paletteColor: string) => (
           <ColorItem

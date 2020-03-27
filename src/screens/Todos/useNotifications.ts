@@ -7,6 +7,10 @@ import { useAppState } from '@/hooks/useAppState';
 const notificationDelay = 5 * 60 * 1000;
 
 export function useNotifications(todos: TodoItem[]) {
+  useEffect(() => {
+    PushNotification.cancelAllLocalNotifications();
+  }, []);
+
   const appState = useAppState();
 
   const pendingNotificationRef = useRef(false);
@@ -17,12 +21,14 @@ export function useNotifications(todos: TodoItem[]) {
 
   useEffect(() => {
     if (todos.length === 0) return;
-    if (appState === 'active') {
+    if (pendingNotificationRef.current && appState === 'active') {
       cancelNotification();
       return;
     }
+    if (pendingNotificationRef.current || appState === 'active') {
+      return;
+    }
 
-    if (pendingNotificationRef.current) return;
     PushNotification.localNotificationSchedule({
       date: new Date(Date.now() + notificationDelay),
       message: `You have ${todos.length} tasks to do!`,

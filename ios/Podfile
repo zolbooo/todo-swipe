@@ -36,6 +36,8 @@ target 'TODOSwipe' do
 
   pod 'RNCPushNotificationIOS', :path => '../node_modules/@react-native-community/push-notification-ios'
 
+  pod 'RNReanimated', :path => '../node_modules/react-native-reanimated'
+
   target 'TODOSwipeTests' do
     inherit! :search_paths
     # Pods for testing

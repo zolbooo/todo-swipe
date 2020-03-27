@@ -4,7 +4,9 @@ import React, {
   useCallback,
   createContext,
   ReactChild,
+  useEffect,
 } from 'react';
+import AsyncStorage from '@react-native-community/async-storage';
 
 export type TodoItem = {
   id: string;
@@ -13,10 +15,11 @@ export type TodoItem = {
   description: string;
 };
 
-export type TodoListActionType = 'DISMISS' | 'DONE' | 'ADD' | 'IGNORE';
+export type TodoListActionType = 'DISMISS' | 'LOAD' | 'DONE' | 'ADD' | 'IGNORE';
 export type TodoListAction =
   | { type: 'DISMISS' }
   | { type: 'DONE' }
+  | { type: 'LOAD'; todos: TodoItem[] }
   | { type: 'ADD'; newItem: TodoItem };
 
 function TodoListDispatcher(
@@ -26,6 +29,8 @@ function TodoListDispatcher(
   switch (action.type) {
     case 'ADD':
       return [action.newItem, ...todos];
+    case 'LOAD':
+      return action.todos;
     case 'DISMISS':
       if (todos.length < 2) return todos;
       return [...todos.slice(1), todos[0]];
@@ -44,11 +49,13 @@ const TodosContext = createContext<{
   add: (newItem: TodoItem) => void;
   done: () => void;
   dismiss: () => void;
+  dispatch: (action: TodoListAction) => void;
 }>({
   todos: [],
   add: defaultFn,
   done: defaultFn,
   dismiss: defaultFn,
+  dispatch: defaultFn,
 });
 
 export function TodoItemsProvider({
@@ -65,8 +72,12 @@ export function TodoItemsProvider({
     [],
   );
 
+  useEffect(() => {
+    AsyncStorage.setItem('todos', JSON.stringify(todos));
+  }, [todos]);
+
   return (
-    <TodosContext.Provider value={{ todos, add, done, dismiss }}>
+    <TodosContext.Provider value={{ todos, add, done, dismiss, dispatch }}>
       {children}
     </TodosContext.Provider>
   );

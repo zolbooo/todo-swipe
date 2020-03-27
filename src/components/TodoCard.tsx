@@ -1,9 +1,10 @@
 import React from 'react';
 import styled from 'styled-components/native';
-
-import { TodoItem } from '@/hooks/useTodoItems';
 import { Animated } from 'react-native';
-import { prop } from 'ramda';
+import { prop, propOr, pipe, __ } from 'ramda';
+
+import palette from '@/assets/palette.json';
+import { TodoItem } from '@/hooks/useTodoItems';
 
 const CardContainer = styled(Animated.View)`
   width: ${prop('width')}px;
@@ -19,24 +20,28 @@ type TodoCardProps = {
   style: any;
 };
 
-const Card = styled.View`
+const pickColorFromPalette = pipe(propOr('white', 'color'), prop(__, palette));
+
+const Card = styled.View<{ color?: string }>`
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
   padding: 20px;
   border-radius: 20px;
-  background-color: white;
+  background-color: ${pickColorFromPalette};
   display: flex;
   flex-direction: column;
 `;
 
-const CardTitle = styled.Text`
+const CardTitle = styled.Text<{ color?: string }>`
+  color: ${propOr('black', 'color')};
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 10px;
 `;
-const CardDescription = styled.Text`
+const CardDescription = styled.Text<{ color?: string }>`
+  color: ${propOr('black', 'color')};
   font-size: 16px;
   font-weight: 500;
 `;
@@ -50,6 +55,7 @@ function TodoCard({
   return (
     <CardContainer width={width} height={height} {...props}>
       <Card
+        color={todo.color}
         style={{
           shadowColor: '#000',
           shadowOffset: {
@@ -61,8 +67,10 @@ function TodoCard({
           elevation: 2,
         }}
       >
-        <CardTitle>{todo.title}</CardTitle>
-        <CardDescription>{todo.description}</CardDescription>
+        <CardTitle color={todo.color && 'white'}>{todo.title}</CardTitle>
+        <CardDescription color={todo.color && 'white'}>
+          {todo.description}
+        </CardDescription>
       </Card>
     </CardContainer>
   );

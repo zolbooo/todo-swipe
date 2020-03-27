@@ -14,8 +14,13 @@ const Todos = () => {
     nextCardScale,
     nextCardOpacity,
   } = useTodoCards([
-    { id: '1', title: 'Todo', description: 'Do something' },
-    { id: '2', title: 'Todo #2', description: 'Do another something' },
+    { id: '1', title: 'Todo', color: 'green', description: 'Do something' },
+    {
+      id: '2',
+      title: 'Todo #2',
+      color: 'yellow',
+      description: 'Do another something',
+    },
   ]);
 
   return (

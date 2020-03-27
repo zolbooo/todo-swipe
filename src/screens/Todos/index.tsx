@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components/native';
-import { prop } from 'ramda';
+import { prop, pipe, T, F } from 'ramda';
 
+import AddTodo from '@/components/AddTodo';
 import { useDimensions } from '@/hooks/useDimensions';
 
 import TodoList from './TodoList';
@@ -38,6 +39,8 @@ const AddIcon = styled.Image`
 
 function Todos() {
   const screen = useDimensions();
+  const [showAddModal, setShowAddModal] = useState(false);
+
   return (
     <>
       <TodosContainer height={screen.height - bottomBarHeight}>
@@ -55,10 +58,11 @@ function Todos() {
           elevation: 3,
         }}
       >
-        <AddButton>
-          <AddIcon source={require('@/assets/add.png')} />
+        <AddButton onPress={pipe(T, setShowAddModal)}>
+          <AddIcon source={require('@/assets/icons/add.png')} />
         </AddButton>
       </BottomBar>
+      <AddTodo show={showAddModal} close={pipe(F, setShowAddModal)} />
     </>
   );
 }

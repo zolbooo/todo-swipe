@@ -1,8 +1,10 @@
-import { useRef, useLayoutEffect } from 'react';
+import { useRef, useEffect, useLayoutEffect } from 'react';
+
+import AsyncStorage from '@react-native-community/async-storage';
 import { T, cond, gt, always, lt, __ } from 'ramda';
 import { Animated, PanResponder, PanResponderGestureState } from 'react-native';
 
-import { useTodoItems } from '@/hooks/useTodoItems';
+import { useTodoItems, TodoItem } from '@/hooks/useTodoItems';
 import { useDimensions } from '@/hooks/useDimensions';
 import { useCallbackRef } from '@/hooks/useCallbackRef';
 
@@ -30,7 +32,16 @@ function getAnimation(action: TodoAction, dy: number, screenWidth: number) {
 
 export function useTodoCards() {
   const screen = useDimensions();
-  const { todos, dismiss, done } = useTodoItems();
+  const { todos, dispatch, dismiss, done } = useTodoItems();
+  useEffect(() => {
+    AsyncStorage.getItem('todos')
+      .then((data: string | null) => data && JSON.parse(data))
+      .then(
+        (loadedTodos: TodoItem[] | boolean) =>
+          loadedTodos && dispatch({ type: 'LOAD', todos: loadedTodos }),
+      )
+      .catch(console.error);
+  }, []);
 
   const position = useRef(new Animated.ValueXY()).current;
   useLayoutEffect(() => position.setValue({ x: 0, y: 0 }), [todos]);

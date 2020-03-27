@@ -4,6 +4,7 @@ import PushNotification from 'react-native-push-notification';
 import { StatusBar } from 'react-native';
 
 import Todos from './screens/Todos';
+import { TodoItemsProvider } from './hooks/useTodoItems';
 
 PushNotification.configure({
   permissions: {
@@ -25,9 +26,11 @@ const App = () => {
   return (
     <>
       <StatusBar backgroundColor="#f3f5fa" barStyle="dark-content" />
-      <AppContainer>
-        <Todos />
-      </AppContainer>
+      <TodoItemsProvider>
+        <AppContainer>
+          <Todos />
+        </AppContainer>
+      </TodoItemsProvider>
     </>
   );
 };

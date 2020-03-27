@@ -13,15 +13,7 @@ const TodoList = () => {
     transformCard,
     nextCardScale,
     nextCardOpacity,
-  } = useTodoCards([
-    { id: '1', title: 'Todo', color: 'green', description: 'Do something' },
-    {
-      id: '2',
-      title: 'Todo #2',
-      color: 'yellow',
-      description: 'Do another something',
-    },
-  ]);
+  } = useTodoCards();
   useNotifications(todos);
 
   return (

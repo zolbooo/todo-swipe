@@ -2,9 +2,9 @@ import { useRef, useLayoutEffect } from 'react';
 import { T, cond, gt, always, lt, __ } from 'ramda';
 import { Animated, PanResponder, PanResponderGestureState } from 'react-native';
 
+import { useTodoItems } from '@/hooks/useTodoItems';
 import { useDimensions } from '@/hooks/useDimensions';
 import { useCallbackRef } from '@/hooks/useCallbackRef';
-import { useTodoItems, TodoItem } from '@/hooks/useTodoItems';
 
 type TodoAction = 'DISMISS' | 'DONE' | 'IGNORE';
 
@@ -28,9 +28,9 @@ function getAnimation(action: TodoAction, dy: number, screenWidth: number) {
   }
 }
 
-export function useTodoCards(initialState: TodoItem[]) {
+export function useTodoCards() {
   const screen = useDimensions();
-  const { todos, dismiss, done } = useTodoItems(initialState);
+  const { todos, dismiss, done } = useTodoItems();
 
   const position = useRef(new Animated.ValueXY()).current;
   useLayoutEffect(() => position.setValue({ x: 0, y: 0 }), [todos]);

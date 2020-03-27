@@ -1,4 +1,10 @@
-import { useReducer, useCallback } from 'react';
+import React, {
+  useContext,
+  useReducer,
+  useCallback,
+  createContext,
+  ReactChild,
+} from 'react';
 
 export type TodoItem = {
   id: string;
@@ -30,8 +36,27 @@ function TodoListDispatcher(
   }
 }
 
-export function useTodoItems(initialState: TodoItem[]) {
-  const [todos, dispatch] = useReducer(TodoListDispatcher, initialState);
+const defaultFn = () => {
+  throw Error('value for TodosContext was not provided');
+};
+const TodosContext = createContext<{
+  todos: TodoItem[];
+  add: (newItem: TodoItem) => void;
+  done: () => void;
+  dismiss: () => void;
+}>({
+  todos: [],
+  add: defaultFn,
+  done: defaultFn,
+  dismiss: defaultFn,
+});
+
+export function TodoItemsProvider({
+  children,
+}: {
+  children: ReactChild | ReactChild[];
+}) {
+  const [todos, dispatch] = useReducer(TodoListDispatcher, []);
 
   const dismiss = useCallback(() => dispatch({ type: 'DISMISS' }), []);
   const done = useCallback(() => dispatch({ type: 'DONE' }), []);
@@ -40,5 +65,13 @@ export function useTodoItems(initialState: TodoItem[]) {
     [],
   );
 
-  return { todos, add, done, dismiss };
+  return (
+    <TodosContext.Provider value={{ todos, add, done, dismiss }}>
+      {children}
+    </TodosContext.Provider>
+  );
+}
+
+export function useTodoItems() {
+  return useContext(TodosContext);
 }

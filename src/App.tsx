@@ -6,8 +6,8 @@ import Todos from './screens/Todos';
 const App = () => {
   return (
     <>
-      <StatusBar barStyle="dark-content" />
-      <SafeAreaView>
+      <StatusBar backgroundColor="#f0efea" barStyle="dark-content" />
+      <SafeAreaView style={{ backgroundColor: '#f0efea' }}>
         <Todos />
       </SafeAreaView>
     </>

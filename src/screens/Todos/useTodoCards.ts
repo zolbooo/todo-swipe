@@ -5,27 +5,33 @@ import {
   PanResponder,
   PanResponderGestureState,
 } from 'react-native';
-import { T, inc } from 'ramda';
+import { T, inc, pipe, cond, gt, always, lt, prop, __ } from 'ramda';
 
 import { useDimensions } from '@/hooks/useDimensions';
 
-const getAnimation = (
-  screen: ScaledSize,
-  gestureState: PanResponderGestureState,
-) => {
-  if (gestureState.dx > 120) {
-    return { toValue: { x: screen.width + 100, y: gestureState.dy } };
-  }
-  if (gestureState.dx < -120) {
-    return { toValue: { x: -screen.width - 100, y: gestureState.dy } };
-  }
-  return {
-    toValue: { x: 0, y: 0 },
-    friction: 4,
-  };
-};
+type TodoAction = 'DISMISS' | 'DONE' | 'IGNORE';
 
-export function useAnimations() {
+const getAction: (dx: number) => TodoAction = cond([
+  [gt(__, 120), always('DONE')],
+  [lt(__, -120), always('DISMISS')],
+  [T, always('IGNORE')],
+]);
+
+function getAnimation(action: TodoAction, dy: number, screenWidth: number) {
+  switch (action) {
+    case 'DONE':
+      return { toValue: { x: screenWidth + 100, y: dy } };
+    case 'DISMISS':
+      return { toValue: { x: -screenWidth - 100, y: dy } };
+    default:
+      return {
+        toValue: { x: 0, y: 0 },
+        friction: 4,
+      };
+  }
+}
+
+export function useTodoCards() {
   const screen = useDimensions();
   const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -40,10 +46,10 @@ export function useAnimations() {
       ]),
       onMoveShouldSetPanResponder: T,
       onPanResponderRelease: (_, gestureState: PanResponderGestureState) => {
-        const animation = getAnimation(screen, gestureState);
-        const shouldShowNext = Math.abs(gestureState.dx) > 120;
+        const action = getAction(gestureState.dx);
+        const animation = getAnimation(action, gestureState.dy, screen.width);
         Animated.spring(position, animation).start(() => {
-          if (shouldShowNext) {
+          if (action !== 'IGNORE') {
             setCurrentIndex(inc);
           }
         });

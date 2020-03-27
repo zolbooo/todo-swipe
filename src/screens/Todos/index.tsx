@@ -3,7 +3,7 @@ import styled from 'styled-components/native';
 
 import FoodItem from '@/components/FoodItem';
 
-import { useAnimations } from './useAnimations';
+import { useTodoCards } from './useTodoCards';
 
 const foods = [
   { id: '1', uri: require('@/assets/poutine.jpeg') },
@@ -20,7 +20,7 @@ const Foods = () => {
     transformCard,
     nextCardScale,
     nextCardOpacity,
-  } = useAnimations();
+  } = useTodoCards();
 
   return (
     <>

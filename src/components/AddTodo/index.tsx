@@ -7,8 +7,9 @@ import { Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 import { useTodoItems } from '@/hooks/useTodoItems';
 import { useDimensions } from '@/hooks/useDimensions';
+import { pickFromPalette } from '@/utils/palette';
 
-import ColorSelector, { pickFromPalette } from './ColorSelector';
+import ColorSelector from './ColorSelector';
 
 const ModalContainer = styled.View`
   display: flex;

@@ -1,15 +1,8 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { pipe, prop, __ } from 'ramda';
 
 import palette from '@/assets/palette.json';
-
-export const pickFromPalette = pipe(
-  prop('color') as (arg: {
-    color: string;
-  }) => 'white' | 'black' | 'red' | 'blue' | 'green' | 'yellow',
-  prop(__, palette),
-);
+import { pickFromPalette } from '@/utils/palette';
 
 const ColorSelectorContainer = styled.View`
   width: 100%;

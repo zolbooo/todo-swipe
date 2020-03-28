@@ -104,7 +104,7 @@ function AddTodo({ show, close }: { show: boolean; close: () => void }) {
           <ModalContent
             color={color}
             behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-            keyboardVerticalOffset={screen.height - modalContentHeight}
+            keyboardVerticalOffset={screen.height - modalContentHeight + 50}
           >
             <TitleInput
               color={color}

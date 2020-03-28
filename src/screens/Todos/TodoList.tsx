@@ -1,5 +1,6 @@
 import React from 'react';
 
+import AllDone from '@/components/AllDone';
 import TodoCard from '@/components/TodoCard';
 
 import { useTodoCards } from './useTodoCards';
@@ -16,6 +17,7 @@ const TodoList = () => {
   } = useTodoCards();
   useNotifications(todos);
 
+  if (todos.length === 0) return <AllDone />;
   return (
     <>
       {todos

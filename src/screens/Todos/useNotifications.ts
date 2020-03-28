@@ -1,10 +1,17 @@
 import { useEffect, useRef, useCallback } from 'react';
 import PushNotification from 'react-native-push-notification';
+import { ifElse, equals, always } from 'ramda';
 
 import { TodoItem } from '@/hooks/useTodoItems';
 import { useAppState } from '@/hooks/useAppState';
 
 const notificationDelay = 5 * 60 * 1000;
+
+const formatTaskCount = ifElse(
+  equals(1),
+  always('one task'),
+  (count: number) => `${count} tasks`,
+);
 
 export function useNotifications(todos: TodoItem[]) {
   useEffect(() => {
@@ -30,7 +37,7 @@ export function useNotifications(todos: TodoItem[]) {
 
     PushNotification.localNotificationSchedule({
       date: new Date(Date.now() + notificationDelay),
-      message: `You have ${todos.length} tasks to do!`,
+      message: `You have ${formatTaskCount(todos.length)} tasks to do!`,
       id: '1',
       userInfo: { id: '1' },
     });

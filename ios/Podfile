@@ -44,4 +44,3 @@ target 'TODOSwipe' do
 
   use_native_modules!
 end
-

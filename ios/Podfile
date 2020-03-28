@@ -42,20 +42,6 @@ target 'TODOSwipe' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
-  target 'TODOSwipeTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
   use_native_modules!
 end
 
-target 'TODOSwipe-tvOS' do
-  # Pods for TODOSwipe-tvOS
-
-  target 'TODOSwipe-tvOSTests' do
-    inherit! :search_paths
-    # Pods for testing
-  end
-
-end

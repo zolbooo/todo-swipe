@@ -38,7 +38,7 @@ const AddIcon = styled.Image`
 `;
 
 function Todos() {
-  const screen = useDimensions();
+  const { screen } = useDimensions();
   const [showAddModal, setShowAddModal] = useState(false);
 
   return (

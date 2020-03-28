@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
+import { useDimensions } from '@react-native-community/hooks';
 import { prop, pipe, equals, always, ifElse } from 'ramda';
 
 import Modal from 'react-native-modal';
 import { Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
 
 import { useTodoItems } from '@/hooks/useTodoItems';
-import { useDimensions } from '@/hooks/useDimensions';
 import { pickFromPalette } from '@/utils/palette';
 import { generateRandomID } from '@/utils/random';
 
@@ -70,7 +70,7 @@ const DoneIcon = styled.Image`
 function AddTodo({ show, close }: { show: boolean; close: () => void }) {
   const { add } = useTodoItems();
 
-  const screen = useDimensions();
+  const { screen } = useDimensions();
   const [title, setTitle] = useState('');
   const [color, setColor] = useState('white');
   const [description, setDescription] = useState('');

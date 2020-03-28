@@ -1,9 +1,9 @@
 import { useEffect, useRef, useCallback } from 'react';
+import { useAppState } from '@react-native-community/hooks';
 import PushNotification from 'react-native-push-notification';
 import { ifElse, equals, always } from 'ramda';
 
 import { TodoItem } from '@/hooks/useTodoItems';
-import { useAppState } from '@/hooks/useAppState';
 
 const notificationDelay = 5 * 60 * 1000;
 

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import styled from 'styled-components/native';
+import { useDimensions } from '@react-native-community/hooks';
 import { prop, pipe, T, F } from 'ramda';
 
 import AddTodo from '@/components/AddTodo';
-import { useDimensions } from '@/hooks/useDimensions';
 
 import TodoList from './TodoList';
 

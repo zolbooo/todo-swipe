@@ -20,12 +20,11 @@ export function useNotifications(todos: TodoItem[]) {
   }, []);
 
   useEffect(() => {
-    if (todos.length === 0) return;
-    if (pendingNotificationRef.current && appState === 'active') {
+    if (appState === 'active') {
       cancelNotification();
       return;
     }
-    if (pendingNotificationRef.current || appState === 'active') {
+    if (todos.length === 0 || pendingNotificationRef.current) {
       return;
     }
 

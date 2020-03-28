@@ -7,10 +7,10 @@ import { TodoItem } from '@/hooks/useTodoItems';
 
 const notificationDelay = 5 * 60 * 1000;
 
-const formatTaskCount = ifElse(
+const formatNotificationMessage = ifElse(
   equals(1),
-  always('one task'),
-  (count: number) => `${count} tasks`,
+  always('You have only one task left!'),
+  (count: number) => `You have ${count} tasks to do!`,
 );
 
 export function useNotifications(todos: TodoItem[]) {
@@ -35,13 +35,13 @@ export function useNotifications(todos: TodoItem[]) {
       return;
     }
 
+    pendingNotificationRef.current = true;
     PushNotification.localNotificationSchedule({
       date: new Date(Date.now() + notificationDelay),
-      message: `You have ${formatTaskCount(todos.length)} tasks to do!`,
+      message: formatNotificationMessage(todos.length),
       id: '1',
       userInfo: { id: '1' },
     });
-    pendingNotificationRef.current = true;
 
     const timeout = setTimeout(cancelNotification, notificationDelay);
     return () => clearTimeout(timeout);

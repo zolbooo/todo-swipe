@@ -1,7 +1,7 @@
 import React from 'react';
 import styled from 'styled-components/native';
 import { Animated } from 'react-native';
-import { prop, propOr, pipe, __ } from 'ramda';
+import { prop, propOr, pipe, __, ifElse, equals, always } from 'ramda';
 
 import palette from '@/assets/palette.json';
 import { TodoItem } from '@/hooks/useTodoItems';
@@ -20,7 +20,10 @@ type TodoCardProps = {
   style: any;
 };
 
-const pickColorFromPalette = pipe(propOr('white', 'color'), prop(__, palette));
+const pickColorFromPalette = pipe(
+  propOr('white', 'color'),
+  prop(__, palette) as (color: string) => string,
+);
 
 const Card = styled.View<{ color?: string }>`
   top: 0;
@@ -34,14 +37,18 @@ const Card = styled.View<{ color?: string }>`
   flex-direction: column;
 `;
 
+const getTextColor = pipe(
+  prop('color') as (arg: { color: string }) => string,
+  ifElse(equals('white'), always('black'), always('white')),
+);
 const CardTitle = styled.Text<{ color?: string }>`
-  color: ${propOr('black', 'color')};
+  color: ${getTextColor};
   font-size: 24px;
   font-weight: 600;
   margin-bottom: 10px;
 `;
 const CardDescription = styled.Text<{ color?: string }>`
-  color: ${propOr('black', 'color')};
+  color: ${getTextColor};
   font-size: 16px;
   font-weight: 500;
 `;
@@ -67,8 +74,8 @@ function TodoCard({
           elevation: 2,
         }}
       >
-        <CardTitle color={todo.color && 'white'}>{todo.title}</CardTitle>
-        <CardDescription color={todo.color && 'white'}>
+        <CardTitle color={todo.color || 'white'}>{todo.title}</CardTitle>
+        <CardDescription color={todo.color || 'white'}>
           {todo.description}
         </CardDescription>
       </Card>

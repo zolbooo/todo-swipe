@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components/native';
 import { useDimensions } from '@react-native-community/hooks';
 import { prop, pipe, equals, always, ifElse } from 'ramda';
 
 import Modal from 'react-native-modal';
-import { Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import {
+  Platform,
+  Keyboard,
+  TextInput,
+  TouchableWithoutFeedback,
+} from 'react-native';
 
 import { useTodoItems } from '@/hooks/useTodoItems';
 import { pickFromPalette } from '@/utils/palette';
@@ -74,6 +79,7 @@ function AddTodo({ show, close }: { show: boolean; close: () => void }) {
   const [color, setColor] = useState('white');
   const [description, setDescription] = useState('');
 
+  const descriptionInputRef = useRef<TextInput>();
   const addTodo = () => {
     add({
       id: generateRandomID(),
@@ -111,8 +117,10 @@ function AddTodo({ show, close }: { show: boolean; close: () => void }) {
               placeholderTextColor={pickPlaceholderColor(color)}
               value={title}
               onChangeText={setTitle}
+              onSubmitEditing={() => descriptionInputRef.current?.focus()}
             />
             <DescriptionInput
+              ref={descriptionInputRef}
               multiline
               color={color}
               placeholderTextColor={pickPlaceholderColor(color)}

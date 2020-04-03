@@ -44,7 +44,6 @@ const TitleInput = styled.TextInput<{ color: string }>`
   width: 100%;
   height: 30px;
   font-size: 24px;
-  text-align: center;
   margin-top: 10px;
   font-weight: 600;
 `;

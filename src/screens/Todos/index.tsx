@@ -4,6 +4,7 @@ import { useDimensions } from '@react-native-community/hooks';
 import { prop, pipe, T, F } from 'ramda';
 
 import AddTodo from '@/components/AddTodo';
+import AddButton from '@/components/AddButton';
 
 import TodoList from './TodoList';
 
@@ -12,6 +13,7 @@ const BottomBar = styled.View`
   width: 100%;
   height: ${bottomBarHeight}px;
   display: flex;
+  position: relative;
   align-items: center;
   flex-direction: row;
   justify-content: space-around;
@@ -25,16 +27,6 @@ const TodosContainer = styled.View`
   position: relative;
   align-items: center;
   justify-content: center;
-`;
-
-const AddButton = styled.TouchableOpacity`
-  width: 30px;
-  height: 30px;
-  margin-bottom: 20px;
-`;
-const AddIcon = styled.Image`
-  width: 30px;
-  height: 30px;
 `;
 
 function Todos() {
@@ -58,9 +50,7 @@ function Todos() {
           elevation: 3,
         }}
       >
-        <AddButton onPress={pipe(T, setShowAddModal)}>
-          <AddIcon source={require('@/assets/icons/add.png')} />
-        </AddButton>
+        <AddButton onPress={pipe(T, setShowAddModal)} />
       </BottomBar>
       <AddTodo show={showAddModal} close={pipe(F, setShowAddModal)} />
     </>

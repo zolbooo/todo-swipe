@@ -96,7 +96,7 @@ function AddTodo({ show, close }: { show: boolean; close: () => void }) {
   return (
     <ModalContainer>
       <Modal
-        onBackdropPress={Keyboard.dismiss}
+        onBackdropPress={pipe(Keyboard.dismiss, close)}
         style={{
           justifyContent: 'flex-end',
           margin: 0,

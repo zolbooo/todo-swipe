@@ -14,15 +14,11 @@ const formatTaskCount = ifElse(
 );
 
 export function useNotifications(todos: TodoItem[]) {
-  useEffect(() => {
-    PushNotification.cancelAllLocalNotifications();
-  }, []);
-
   const appState = useAppState();
 
   const pendingNotificationRef = useRef(false);
   const cancelNotification = useCallback(() => {
-    PushNotification.cancelLocalNotifications({ id: 1 });
+    PushNotification.cancelAllLocalNotifications();
     pendingNotificationRef.current = false;
   }, []);
 
@@ -37,7 +33,7 @@ export function useNotifications(todos: TodoItem[]) {
 
     PushNotification.localNotificationSchedule({
       date: new Date(Date.now() + notificationDelay),
-      message: `You have ${formatTaskCount(todos.length)} tasks to do!`,
+      message: `You have ${formatTaskCount(todos.length)} to do!`,
       id: '1',
       userInfo: { id: '1' },
     });

@@ -25,8 +25,8 @@ const ModalContent = styled.KeyboardAvoidingView<{ color?: string }>`
   align-items: center;
   flex-direction: column;
   background-color: ${pickFromPalette};
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 `;
 
 const pickTextColor = pipe(

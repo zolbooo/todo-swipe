@@ -17,7 +17,7 @@ const ColorItem = styled.TouchableOpacity<{ color: string }>`
   height: 30px;
   border-width: 1px;
   border-color: grey;
-  border-radius: 15px;
+  border-radius: 10px;
   background-color: ${pickFromPalette};
 `;
 

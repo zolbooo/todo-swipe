@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Animated } from 'react-native';
+import { Animated, View } from 'react-native';
 import { prop, propOr, pipe, __, ifElse, equals, always } from 'ramda';
 
 import palette from '@/assets/palette.json';
-import { TodoItem } from '@/hooks/useTodoItems';
+import { TodoItem, useTodoItems } from '@/hooks/useTodoItems';
 
 const CardContainer = styled(Animated.View)`
   width: ${prop('width')}px;
@@ -18,6 +18,9 @@ type TodoCardProps = {
   width: number;
   height: number;
   style: any;
+
+  skip: () => void;
+  done: () => void;
 };
 
 const pickColorFromPalette = pipe(
@@ -53,12 +56,34 @@ const CardDescription = styled.Text<{ color?: string }>`
   font-weight: 500;
 `;
 
+const CardActionSection = styled.View`
+  width: 100%;
+  height: 40px;
+  padding: 0 15px;
+  margin-top: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+const ActionButton = styled.TouchableWithoutFeedback`
+  width: 30px;
+  height: 30px;
+`;
+const ActionIcon = styled.Image`
+  width: 30px;
+  height: 30px;
+`;
+
 function TodoCard({
   width,
   height,
   todo,
+  skip,
+  done,
   ...props
 }: TodoCardProps & { [key: string]: any }) {
+  const { todos } = useTodoItems();
+
   return (
     <CardContainer width={width} height={height} {...props}>
       <Card
@@ -78,6 +103,30 @@ function TodoCard({
         <CardDescription color={todo.color || 'white'}>
           {todo.description}
         </CardDescription>
+        <CardActionSection>
+          {todos.length > 1 ? (
+            <ActionButton onPress={skip}>
+              <ActionIcon
+                source={
+                  todo.color === 'white'
+                    ? require('@/assets/icons/skip_black.png')
+                    : require('@/assets/icons/skip.png')
+                }
+              />
+            </ActionButton>
+          ) : (
+            <View />
+          )}
+          <ActionButton onPress={done}>
+            <ActionIcon
+              source={
+                todo.color === 'white'
+                  ? require('@/assets/icons/done_black.png')
+                  : require('@/assets/icons/done.png')
+              }
+            />
+          </ActionButton>
+        </CardActionSection>
       </Card>
     </CardContainer>
   );

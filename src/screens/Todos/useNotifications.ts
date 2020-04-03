@@ -14,15 +14,11 @@ const formatNotificationMessage = ifElse(
 );
 
 export function useNotifications(todos: TodoItem[]) {
-  useEffect(() => {
-    PushNotification.cancelAllLocalNotifications();
-  }, []);
-
   const appState = useAppState();
 
   const pendingNotificationRef = useRef(false);
   const cancelNotification = useCallback(() => {
-    PushNotification.cancelLocalNotifications({ id: 1 });
+    PushNotification.cancelAllLocalNotifications();
     pendingNotificationRef.current = false;
   }, []);
 

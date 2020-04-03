@@ -1,4 +1,4 @@
-import { useRef, useEffect, useLayoutEffect } from 'react';
+import { useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import { useDimensions } from '@react-native-community/hooks';
 
 import AsyncStorage from '@react-native-community/async-storage';
@@ -16,23 +16,9 @@ const getAction = cond<number, TodoAction>([
   [T, always('IGNORE')],
 ]);
 
-function getAnimation(action: TodoAction, dy: number, screenWidth: number) {
-  switch (action) {
-    case 'DONE':
-      return { toValue: { x: screenWidth + 100, y: dy } };
-    case 'DISMISS':
-      return { toValue: { x: -screenWidth - 100, y: dy } };
-    default:
-      return {
-        toValue: { x: 0, y: 0 },
-        friction: 4,
-      };
-  }
-}
-
 export function useTodoCards() {
   const { screen } = useDimensions();
-  const { todos, dispatch, dismiss, done } = useTodoItems();
+  const { todos, dispatch, dismiss, done: nextCard } = useTodoItems();
   useEffect(() => {
     AsyncStorage.getItem('todos')
       .then((data: string | null) => data && JSON.parse(data))
@@ -46,22 +32,43 @@ export function useTodoCards() {
   const position = useRef(new Animated.ValueXY()).current;
   useLayoutEffect(() => position.setValue({ x: 0, y: 0 }), [todos]);
 
+  const done = useCallback(
+    (gestureState?: PanResponderGestureState) => {
+      Animated.spring(position, {
+        toValue: { x: screen.width + 100, y: gestureState?.dy ?? 0 },
+      }).start(nextCard);
+    },
+    [position, screen],
+  );
+  const skip = useCallback(
+    (gestureState?: PanResponderGestureState) => {
+      if (todos.length === 1) return;
+      Animated.spring(position, {
+        toValue: { x: -screen.width - 100, y: gestureState?.dy ?? 0 },
+      }).start(dismiss);
+    },
+    [todos, position, screen],
+  );
+
   const handleGestureReleaseRef = useCallbackRef(
     (gestureState: PanResponderGestureState) => {
       const action = getAction(gestureState.dx);
-      const shouldIgnore =
-        (action === 'DISMISS' && todos.length === 1) || action === 'IGNORE';
-
-      const animation = getAnimation(
-        shouldIgnore ? 'IGNORE' : action,
-        gestureState.dy,
-        screen.width,
-      );
-      Animated.spring(position, animation).start(() => {
-        if (shouldIgnore) return;
-        if (action === 'DONE') done();
-        if (action === 'DISMISS') dismiss();
-      });
+      switch (action) {
+        case 'IGNORE':
+          Animated.spring(position, {
+            toValue: { x: 0, y: 0 },
+            friction: 4,
+          });
+          break;
+        case 'DISMISS':
+          skip(gestureState);
+          break;
+        case 'DONE':
+          done(gestureState);
+          break;
+        default:
+          throw Error(`Unknown action in gesture handler: ${action}`);
+      }
     },
     [todos.length],
   );
@@ -103,6 +110,8 @@ export function useTodoCards() {
   ).current;
 
   return {
+    done,
+    skip,
     todos,
     screen,
     panResponder,

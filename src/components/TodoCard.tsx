@@ -1,10 +1,10 @@
 import React from 'react';
 import styled from 'styled-components/native';
-import { Animated } from 'react-native';
+import { Animated, View } from 'react-native';
 import { prop, propOr, pipe, __, ifElse, equals, always } from 'ramda';
 
 import palette from '@/assets/palette.json';
-import { TodoItem } from '@/hooks/useTodoItems';
+import { TodoItem, useTodoItems } from '@/hooks/useTodoItems';
 
 const CardContainer = styled(Animated.View)`
   width: ${prop('width')}px;
@@ -82,6 +82,8 @@ function TodoCard({
   done,
   ...props
 }: TodoCardProps & { [key: string]: any }) {
+  const { todos } = useTodoItems();
+
   return (
     <CardContainer width={width} height={height} {...props}>
       <Card
@@ -102,15 +104,19 @@ function TodoCard({
           {todo.description}
         </CardDescription>
         <CardActionSection>
-          <ActionButton onPress={skip}>
-            <ActionIcon
-              source={
-                todo.color === 'white'
-                  ? require('@/assets/icons/skip_black.png')
-                  : require('@/assets/icons/skip.png')
-              }
-            />
-          </ActionButton>
+          {todos.length > 1 ? (
+            <ActionButton onPress={skip}>
+              <ActionIcon
+                source={
+                  todo.color === 'white'
+                    ? require('@/assets/icons/skip_black.png')
+                    : require('@/assets/icons/skip.png')
+                }
+              />
+            </ActionButton>
+          ) : (
+            <View />
+          )}
           <ActionButton onPress={done}>
             <ActionIcon
               source={

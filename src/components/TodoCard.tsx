@@ -18,6 +18,9 @@ type TodoCardProps = {
   width: number;
   height: number;
   style: any;
+
+  skip: () => void;
+  done: () => void;
 };
 
 const pickColorFromPalette = pipe(
@@ -53,10 +56,30 @@ const CardDescription = styled.Text<{ color?: string }>`
   font-weight: 500;
 `;
 
+const CardActionSection = styled.View`
+  width: 100%;
+  height: 40px;
+  padding: 0 15px;
+  margin-top: auto;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+`;
+const ActionButton = styled.TouchableWithoutFeedback`
+  width: 30px;
+  height: 30px;
+`;
+const ActionIcon = styled.Image`
+  width: 30px;
+  height: 30px;
+`;
+
 function TodoCard({
   width,
   height,
   todo,
+  skip,
+  done,
   ...props
 }: TodoCardProps & { [key: string]: any }) {
   return (
@@ -78,6 +101,26 @@ function TodoCard({
         <CardDescription color={todo.color || 'white'}>
           {todo.description}
         </CardDescription>
+        <CardActionSection>
+          <ActionButton onPress={skip}>
+            <ActionIcon
+              source={
+                todo.color === 'white'
+                  ? require('@/assets/icons/skip_black.png')
+                  : require('@/assets/icons/skip.png')
+              }
+            />
+          </ActionButton>
+          <ActionButton onPress={done}>
+            <ActionIcon
+              source={
+                todo.color === 'white'
+                  ? require('@/assets/icons/done_black.png')
+                  : require('@/assets/icons/done.png')
+              }
+            />
+          </ActionButton>
+        </CardActionSection>
       </Card>
     </CardContainer>
   );

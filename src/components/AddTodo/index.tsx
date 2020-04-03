@@ -1,10 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import styled from 'styled-components/native';
 import { useDimensions } from '@react-native-community/hooks';
 import { prop, pipe, equals, always, ifElse } from 'ramda';
 
 import Modal from 'react-native-modal';
-import { Platform, Keyboard, TouchableWithoutFeedback } from 'react-native';
+import {
+  Platform,
+  Keyboard,
+  TextInput,
+  TouchableWithoutFeedback,
+} from 'react-native';
 
 import { useTodoItems } from '@/hooks/useTodoItems';
 import { pickFromPalette } from '@/utils/palette';
@@ -25,8 +30,8 @@ const ModalContent = styled.KeyboardAvoidingView<{ color?: string }>`
   align-items: center;
   flex-direction: column;
   background-color: ${pickFromPalette};
-  border-top-left-radius: 10px;
-  border-top-right-radius: 10px;
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
 `;
 
 const pickTextColor = pipe(
@@ -44,7 +49,6 @@ const TitleInput = styled.TextInput<{ color: string }>`
   width: 100%;
   height: 30px;
   font-size: 24px;
-  text-align: center;
   margin-top: 10px;
   font-weight: 600;
 `;
@@ -75,6 +79,7 @@ function AddTodo({ show, close }: { show: boolean; close: () => void }) {
   const [color, setColor] = useState('white');
   const [description, setDescription] = useState('');
 
+  const descriptionInputRef = useRef<TextInput>();
   const addTodo = () => {
     add({
       id: generateRandomID(),
@@ -112,8 +117,10 @@ function AddTodo({ show, close }: { show: boolean; close: () => void }) {
               placeholderTextColor={pickPlaceholderColor(color)}
               value={title}
               onChangeText={setTitle}
+              onSubmitEditing={() => descriptionInputRef.current?.focus()}
             />
             <DescriptionInput
+              ref={descriptionInputRef}
               multiline
               color={color}
               placeholderTextColor={pickPlaceholderColor(color)}

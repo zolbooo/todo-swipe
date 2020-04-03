@@ -1,6 +1,8 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components/native';
 import PushNotification from 'react-native-push-notification';
+import * as LocalAuthentication from 'expo-local-authentication';
+
 import { StatusBar } from 'react-native';
 
 import Todos from './screens/Todos';
@@ -23,6 +25,18 @@ const AppContainer = styled.SafeAreaView`
 `;
 
 const App = () => {
+  const [locked, setLocked] = useState(true);
+  useEffect(() => {
+    LocalAuthentication.authenticateAsync({
+      promptMessage: 'Unlock todo-swipe app',
+    }).then(({ success }) => {
+      if (success) {
+        setLocked(false);
+      }
+    });
+  }, []);
+
+  if (locked) return null;
   return (
     <>
       <StatusBar backgroundColor="#f3f5fa" barStyle="dark-content" />

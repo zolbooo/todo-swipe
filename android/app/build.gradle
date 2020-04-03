@@ -178,7 +178,10 @@ android {
     }
 }
 
+apply from: '../../node_modules/react-native-unimodules/gradle.groovy'
 dependencies {
+    addUnimodulesDependencies()
+
     implementation project(':@react-native-community_async-storage')
     implementation project(':react-native-splash-screen')
     implementation project(':react-native-reanimated')

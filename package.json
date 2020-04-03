@@ -12,6 +12,7 @@
   "dependencies": {
     "@react-native-community/async-storage": "^1.8.1",
     "@react-native-community/hooks": "^2.4.7",
+    "expo-local-authentication": "^9.0.0",
     "ramda": "^0.27.0",
     "react": "16.9.0",
     "react-native": "0.61.5",

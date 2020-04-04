@@ -1,8 +1,8 @@
 import { useRef, useEffect, useLayoutEffect, useCallback } from 'react';
 import { useDimensions } from '@react-native-community/hooks';
 
+import { T } from 'ramda';
 import AsyncStorage from '@react-native-community/async-storage';
-import { T, cond, gt, always, lt, __ } from 'ramda';
 import { Animated, PanResponder, PanResponderGestureState } from 'react-native';
 
 import { useCallbackRef } from '@/hooks/useCallbackRef';
@@ -10,11 +10,13 @@ import { useTodoItems, TodoItem } from '@/hooks/useTodoItems';
 
 type TodoAction = 'DISMISS' | 'DONE' | 'IGNORE';
 
-const getAction = cond<number, TodoAction>([
-  [gt(__, 120), always('DONE')],
-  [lt(__, -120), always('DISMISS')],
-  [T, always('IGNORE')],
-]);
+function getAction(dx: number, remainingTodos: number): TodoAction {
+  if (dx > 120) return 'DONE';
+  if (dx < -120) {
+    return remainingTodos > 1 ? 'DISMISS' : 'IGNORE';
+  }
+  return 'IGNORE';
+}
 
 export function useTodoCards() {
   const { screen } = useDimensions();
@@ -42,24 +44,17 @@ export function useTodoCards() {
   );
   const skip = useCallback(
     (gestureState?: PanResponderGestureState) => {
-      if (todos.length === 1) return;
       Animated.spring(position, {
         toValue: { x: -screen.width - 100, y: gestureState?.dy ?? 0 },
       }).start(dismiss);
     },
-    [todos, position, screen],
+    [position, screen],
   );
 
   const handleGestureReleaseRef = useCallbackRef(
     (gestureState: PanResponderGestureState) => {
-      const action = getAction(gestureState.dx);
+      const action = getAction(gestureState.dx, todos.length);
       switch (action) {
-        case 'IGNORE':
-          Animated.spring(position, {
-            toValue: { x: 0, y: 0 },
-            friction: 4,
-          });
-          break;
         case 'DISMISS':
           skip(gestureState);
           break;
@@ -67,7 +62,10 @@ export function useTodoCards() {
           done(gestureState);
           break;
         default:
-          throw Error(`Unknown action in gesture handler: ${action}`);
+          Animated.spring(position, {
+            toValue: { x: 0, y: 0 },
+            friction: 4,
+          }).start();
       }
     },
     [todos.length],

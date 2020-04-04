@@ -26,6 +26,7 @@ const TodoList = () => {
     skip,
     width: screen.width,
     height: screen.height - 120,
+    remainingTodos: todos.length,
   };
   return (
     <>

@@ -4,7 +4,7 @@ import { Animated, View } from 'react-native';
 import { prop, propOr, pipe, __, ifElse, equals, always } from 'ramda';
 
 import palette from '@/assets/palette.json';
-import { TodoItem, useTodoItems } from '@/hooks/useTodoItems';
+import { TodoItem } from '@/hooks/useTodoItems';
 
 const CardContainer = styled(Animated.View)`
   width: ${prop('width')}px;
@@ -17,6 +17,7 @@ type TodoCardProps = {
   todo: TodoItem;
   width: number;
   height: number;
+  remainingTodos: number;
   style: any;
 
   skip: () => void;
@@ -75,6 +76,7 @@ const ActionIcon = styled.Image`
 `;
 
 function TodoCard({
+  remainingTodos,
   width,
   height,
   todo,
@@ -82,8 +84,6 @@ function TodoCard({
   done,
   ...props
 }: TodoCardProps & { [key: string]: any }) {
-  const { todos } = useTodoItems();
-
   return (
     <CardContainer width={width} height={height} {...props}>
       <Card
@@ -104,7 +104,7 @@ function TodoCard({
           {todo.description}
         </CardDescription>
         <CardActionSection>
-          {todos.length > 1 ? (
+          {remainingTodos > 1 ? (
             <ActionButton onPress={skip}>
               <ActionIcon
                 source={
